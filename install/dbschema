@@ -1,0 +1,17 @@
+ Basic ideas for how the database will work
+ 
+ RSSFEEDS
+ id, url, iconurl, last checked, last updated
+ 
+ RSSITEMS
+ id, feed id, link, subject, date, content
+ 
+ USERS //use OAuth? Maybe? Possibly Graviatar as well?
+ id (maybe username), pwd, registered, last seen
+ 
+ USERFEEDS
+ idfeed, iduser, sortsetting, showreadsetting, folder
+ 
+ USERITEMS
+ iduser, idfeed, shared, starred, read
+ 
