@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if(php_sapi_name() != 'cli') echo "<pre>";
 //this will probably take a while to execute.
 //log in to mysql
@@ -17,8 +17,9 @@ $checkitem = $db->prepare("SELECT `id` FROM `rssitems` WHERE date=? AND subject=
 $checkitem->bind_param("ss",$date,$subject);
 
 while($row = $feeds->fetch_assoc()){
-//if thread does not update often, and it has been checked recently, skip
+//if thread does not update often, and it has been checked recently, Perhaps look for patterns in history?
   //download rss
+  echo "Scraping ",$row['title'],"...\n";
   $rss = Feed::loadRss($row['url']);
   //for each rss:
   foreach($rss->item as $item){
@@ -33,10 +34,9 @@ while($row = $feeds->fetch_assoc()){
 	$checkitem->store_result();
 
 	if($checkitem->num_rows==0){
-		echo "Adding item: ",$row['title']," - ",$subject,"... ",$additem->execute(),$db->error,"\n";
+		echo "    Adding item: ",$row['title']," - ",$subject,"... ",$additem->execute(),$db->error,"\n";
 	} else {
-		echo "Skipping the rest of this feed...\n";
-		break;
+		//echo "    Skipping item: ",$row['title']," - ",$subject,"...\n";
 	}
   }
 }
