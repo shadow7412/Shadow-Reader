@@ -1,9 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
-  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
-  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css"/>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="include/smoothscroll.js"></script>
+  <link rel="stylesheet" href="css/jquery-ui-1.10.1.custom.min.css"/>
   <!--   This will be exported to a file later for performance - but now we can just worry about the cache -->
   <style>
   body, body div {
@@ -29,11 +30,11 @@
     display: table-cell;
     vertical-align: top;
     min-width:200px;
-    background-image: linear-gradient(left top, #DBDBDB 29%, #FFFFFF 65%);
-    background-image: -o-linear-gradient(left top, #DBDBDB 29%, #FFFFFF 65%);
-    background-image: -moz-linear-gradient(left top, #DBDBDB 29%, #FFFFFF 65%);
-    background-image: -webkit-linear-gradient(left top, #DBDBDB 29%, #FFFFFF 65%);
-    background-image: -ms-linear-gradient(left top, #DBDBDB 29%, #FFFFFF 65%);
+    background-image: linear-gradient(right top, #DBDBDB 29%, #FFFFFF 65%);
+    background-image: -o-linear-gradient(right top, #DBDBDB 29%, #FFFFFF 65%);
+    background-image: -moz-linear-gradient(right top, #DBDBDB 29%, #FFFFFF 65%);
+    background-image: -webkit-linear-gradient(right top, #DBDBDB 29%, #FFFFFF 65%);
+    background-image: -ms-linear-gradient(right top, #DBDBDB 29%, #FFFFFF 65%);
   } 
   </style>
   <script>
