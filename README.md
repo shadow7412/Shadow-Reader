@@ -25,3 +25,6 @@ Threads
 
 Google Takeout
 * Allow people to import from this service. This will make the transition from Google to Shadow easy.
+
+Mobile
+* Yes. But perhaps a bit later.
