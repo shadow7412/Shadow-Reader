@@ -15,7 +15,7 @@ Feed Reader
 * People who log in will all have marked and starred options - which will be in a different table
 
 Sharing is caring
-* You will be abke to view another person's shared threads (like in old google reader)
+* You will be able to view another person's shared threads (like in old google reader)
 * Sharing is Global (for now) to ease security requirements
 
 Threads
@@ -27,4 +27,4 @@ Google Takeout
 * Allow people to import from this service. This will make the transition from Google to Shadow easy.
 
 Mobile
-* Yes. But perhaps a bit later.
+* Yes. But perhaps a bit later. Lets get the thing working first.
