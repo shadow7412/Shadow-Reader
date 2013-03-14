@@ -1,4 +1,5 @@
-﻿<?php
+﻿#/usr/bin/env php
+<?php
 if(php_sapi_name() != 'cli') echo "<pre>";
 //this will probably take a while to execute.
 //log in to mysql
@@ -34,9 +35,10 @@ while($row = $feeds->fetch_assoc()){
 	$checkitem->store_result();
 
 	if($checkitem->num_rows==0){
-		echo "    Adding item: ",$row['title']," - ",$subject,"... ",$additem->execute(),$db->error,"\n";
+	      echo "    Adding item: ",$row['title']," - ",$subject,"... ",$additem->execute()?"Success":"Failed",$db->error,"\n";
 	} else {
-		//echo "    Skipping item: ",$row['title']," - ",$subject,"...\n";
+	      echo "    Found entry we already have - skipping rest of thread.\n";
+	      break;
 	}
   }
 }

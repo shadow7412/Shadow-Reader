@@ -15,3 +15,8 @@
  USERITEMS
  iduser, idfeed, shared, starred, read
  
+ USERMETRICS  - when a user marks something as read etc we can also put a thing in here. This could mean pretty graphs - like google's trending etc
+ iduser, action, date, rssitemid
+ 
+ SCRAPEMETRICS
+ date, feeds, newitems, errors, errordetail
