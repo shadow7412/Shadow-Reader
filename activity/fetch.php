@@ -21,5 +21,5 @@ $res = $db->query("SELECT * FROM `rssitems` ORDER BY date DESC LIMIT ".get("star
 while($row = $res->fetch_assoc()){
 	$json[] = $row;
 }
-echo json_encode($json,true);
+echo json_encode($json);
 ?>
