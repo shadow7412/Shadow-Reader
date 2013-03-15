@@ -2,10 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
 <head>
   <title>Shadow Reader</title>
+  <link rel="stylesheet" href="css/jquery-ui-1.10.1.custom.min.css"/>
   <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="include/jquery.mfs.nestedSortable.js"></script>
   <script type="text/javascript" src="include/smoothscroll.js"></script>
-  <link rel="stylesheet" href="css/jquery-ui-1.10.1.custom.min.css"/>
   <!--   This will be exported to a file later for performance - but now we can just worry about the cache -->
   <style>
   body, body div {
@@ -48,16 +49,83 @@
 	overflow:auto;
 	font-size:12px;
   }
+  ol {
+			margin: 0;
+			padding: 0;
+			padding-left: 30px;
+		}
+
+		ol.sortable, ol.sortable ol {
+			margin: 0 0 0 25px;
+			padding: 0;
+			list-style-type: none;
+		}
+
+		ol.sortable {
+			margin: 4em 0;
+		}
+
+		.sortable li {
+			margin: 5px 0 0 0;
+			padding: 0;
+		}
+
+		.sortable li div  {
+			border: 1px solid #d4d4d4;
+			-webkit-border-radius: 3px;
+			-moz-border-radius: 3px;
+			border-radius: 3px;
+			border-color: #D4D4D4 #D4D4D4 #BCBCBC;
+			padding: 6px;
+			margin: 0;
+			cursor: move;
+			background: #f6f6f6;
+			background: -moz-linear-gradient(top,  #ffffff 0%, #f6f6f6 47%, #ededed 100%);
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(47%,#f6f6f6), color-stop(100%,#ededed));
+			background: -webkit-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%);
+			background: -o-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%);
+			background: -ms-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%);
+			background: linear-gradient(to bottom,  #ffffff 0%,#f6f6f6 47%,#ededed 100%);
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 );
+		}
+
+		.sortable li.mjs-nestedSortable-branch div {
+			background: -moz-linear-gradient(top,  #ffffff 0%, #f6f6f6 47%, #f0ece9 100%);
+			background: -webkit-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#f0ece9 100%);
+
+		}
+
+		.sortable li.mjs-nestedSortable-leaf div {
+			background: -moz-linear-gradient(top,  #ffffff 0%, #f6f6f6 47%, #bcccbc 100%);
+			background: -webkit-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#bcccbc 100%);
+		}
+		.active{
+			background: -moz-linear-gradient(top,  #ffffff 0%, #0ff 47%, #bcccbc 100%)!important;
+			background: -webkit-linear-gradient(top,  #ffffff 0%,#0ff  47%,#bcccbc 100%)!important;
+			font-weight:bold;
+		}
+		.folder:before{
+			content:"F: ";
+		}
+		.placeholder {
+			outline: 1px dashed #4183C4;
+			height:32px;
+		}
+		.ui-accordion-header{
+			padding-top:0px!important;
+			padding-bottom:0px!important;
+		}
   </style>
   <script>
 	var o = {};
+	var folder = 0;
 	var l = {
 		loading:"Loading Articles, Please wait...",
 		end:"There are no more items to view",
 		none:"There are no items in this category"
 	}
 	function loadBox(text){
-	console.log("Loadbox:",text)
+		console.log("Loadbox:",text)
 		if(text){
 			$(o.l).fadeIn().text(text);
 		} else {
@@ -67,10 +135,22 @@
 	$(function() {
 		o = {
 			f:document.getElementById("feedlist"),
+			s:document.getElementById("sidebar"),
 			l:document.getElementById("load")
 		}
 		loadBox(l.loading);
 		fetchData();
+		
+		 $('#folders').nestedSortable({
+            handle: 'div',
+            items: 'li',
+            toleranceElement: '> div',
+			protectRoot:true,
+			opacity:.6,
+			placeholder:"placeholder",
+			revert:250,
+			isAllowed:function(item,parent){return $("div", parent).hasClass("folder");}
+        });
 	});
 	function destroyAccordion(){
 		var active = false;
@@ -84,9 +164,10 @@
 		$(o.f).accordion({
 			active: a,
 			beforeActivate:function(event,ui){
-				console.log(ui.newHeader[0].getAttribute("name"));
+				var scroll = $(ui.newHeader).prev().prev();
+				$(document).scrollTo(scroll.length?scroll:"0%",300);
 				ui.newHeader.addClass("read");
-				$.post("");
+				$.post("activity/read.php",{item:ui.newHeader[0].getAttribute("name")});
 				return true;
 				//send 'read' notification
 			},
@@ -97,7 +178,7 @@
 	function fetchData(more){
 		loadBox(l.loading);
 		$.ajax("activity/fetch.php",{
-			data:{start:more?more:0,length:more?30:(screen.height/50+10),folder:0},
+			data:{start:more?more:0,length:more?30:(screen.height/50+10),folder:folder},
 			dataType:"json",
 			type:"GET",
 			success:function(a){
@@ -118,17 +199,19 @@
 						"</div>");
 				}
 				refreshAccordion(active);
+				$(o.f).fadeIn();
 				loadBox(lb);
 			},
 			error:function(a,b,c){console.log(a,b,c);}
 		});
 	}
-	function loadFolder(ref){
+	function loadFolder(ele, ref){
+		$(".active",o.s).removeClass("active");
+		$(ele).parent().addClass("active");
+		folder=ref;
 		loadBox(l.loading);
-		destroyAccordion();
-		o.f.innerHTML="";
 		//stuff
-		fetchData();
+		setTimeout(function(){while(o.f.firstChild)o.f.removeChild(o.f.firstChild);fetchData();},7)
 	}
 	//event handler for infinite scrolling
 	$(window).scroll(function(){  
@@ -146,7 +229,7 @@
 				else j.next().next("h3").trigger("click");
 				break;
 			case 107: //k - previous item
-				$(".ui-accordion-hejader.ui-state-active").prev().prev("h3").trigger("click");
+				$(".ui-accordion-header.ui-state-active").prev().prev("h3").trigger("click");
 				break;
 			
 		}
@@ -158,17 +241,22 @@
 <div class="sidebar">
   <h1 onclick="window.open('exe/updateThreads.php')">SR</h1>
   <ul>
-    <li><a href="javascript:loadFolder();">All items</a></li>
+    <li>All items</li>
     <li>Starred items</li>
     <li>Trends</li>
     <br/>
-    <li>Subscriptions</li>
-    <ul>
-      <li>IHC</li>
-      <li>Books of Adam</li>
-      <li>The Oatmeal</li>
-      <li>(this is a lie)</li>
-    </ul>
+    <ol id="folders" class="sortable">
+	  <li>
+		  <div class="folder active"><a onclick="loadFolder(this,0);">Subscriptions</a></div>
+		  <ol>
+			  <li><div><a onclick="loadFolder(this,2)">IHC</a></div></li>
+			  <li><div><a onclick="loadFolder(this,1)">Questionable Content</a></div></li>
+			  <li><div>Books of Adam</div></li>
+			  <li><div>The Oatmeal</div></li>
+			  <li><div>(this is a lie)</div></li>
+		  </ol>
+	  </li>
+    </ol>
   </ul>
 </div>
 <!-- Main content -->

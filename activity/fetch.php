@@ -7,7 +7,7 @@ function get($a, $b=""){
 	} else return $b;
 }
 $json = array();
-$res = $db->query("SELECT * FROM `rssitems` ORDER BY date DESC LIMIT ".get("start",0).",".get("length",100));
+$res = $db->query("SELECT * FROM `rssitems` ".(get("folder",0)==0?"":" WHERE `feed`=".get("folder",0))." ORDER BY date DESC LIMIT ".get("start",0).",".get("length",100));
 
 //requires:
 //id of Item
