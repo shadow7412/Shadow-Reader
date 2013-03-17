@@ -12,11 +12,13 @@ $res = $db->query("SELECT * FROM `rssitems` ".(get("folder",0)==0?"":" WHERE `fe
 //requires:
 //id of Item
 //Feed Name
-//Date of Itemr
+//Date of Item
 
 //Subject of Item
 //Content of Item
 //Link of Item
+
+//is read/starred/shared
 
 while($row = $res->fetch_assoc()){
 	$json[] = $row;

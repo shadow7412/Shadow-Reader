@@ -5,6 +5,7 @@
   <link rel="stylesheet" href="css/jquery-ui-1.10.1.custom.min.css"/>
   <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="//apis.google.com/js/client:plusone.js"></script>
   <script type="text/javascript" src="include/jquery.mfs.nestedSortable.js"></script>
   <script type="text/javascript" src="include/smoothscroll.js"></script>
   <!--   This will be exported to a file later for performance - but now we can just worry about the cache -->
@@ -122,7 +123,9 @@
 	var l = {
 		loading:"Loading Articles, Please wait...",
 		end:"There are no more items to view",
-		none:"There are no items in this category"
+		none:"There are no items in this category",
+		signin:"Please sign in.",
+		signing:"Signing in..."
 	}
 	function loadBox(text){
 		console.log("Loadbox:",text)
@@ -138,8 +141,7 @@
 			s:document.getElementById("sidebar"),
 			l:document.getElementById("load")
 		}
-		loadBox(l.loading);
-		fetchData();
+		loadBox(l.signin);
 		
 		 $('#folders').nestedSortable({
             handle: 'div',
@@ -234,12 +236,51 @@
 			
 		}
 	});
+	//google login
+	function signinCallback(status){
+		loadBox(l.signing);
+		$("#signinButton").fadeOut();
+		$.ajax("https://www.googleapis.com/oauth2/v1/tokeninfo?access_token="+status.access_token,{
+			dataType:"json",
+			success:function(r){
+				console.log(r);
+				$.ajax("activity/login.php",{
+					type:"post",
+					data:{"login":r.email}
+				});
+				fetchData();
+			},
+			error:function(a){
+				loadBox("Error: Could not sign you in. Try refreshing the page.");
+				console.log(a);
+			}
+		});
+	}
+	/*
+	{
+	  "id_token": the user ID,
+	  "access_token": the access token,
+	  "expires_in": the validity of the tokens, in seconds,
+	  "error": The OAuth2 error type if problems occurred,
+	  "error_description": an error message if problems occurred
+	}
+	*/
   </script>
 </head>
 <body>
 <!-- I guess there should be a sidebar if we want to follow Google's example - though sidebars generally are a pain in the butt -->
 <div class="sidebar">
   <h1 onclick="window.open('exe/updateThreads.php')">SR</h1>
+  <span id="signinButton">
+	  <span
+		class="g-signin"
+		data-callback="signinCallback"
+		data-clientid="154114301111.apps.googleusercontent.com"
+		data-cookiepolicy="single_host_origin"
+		data-requestvisibleactions="http://schemas.google.com/AddActivity"
+		data-scope="https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email">
+	  </span>
+  </span>
   <ul>
     <li>All items</li>
     <li>Starred items</li>

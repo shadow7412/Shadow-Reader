@@ -1,3 +1,7 @@
 <?php
-//Well... we can't do this until we have separate users. But if we wanted to do metrics, this would be the place...
+require "../include/db.php";
+$item = intval($_POST['item']);
+if($item==0) die("Request error.");
+$db->query("INSERT INTO `useritems` (`iduser`,`iditem`,`read`) VALUES ('$_user',$item,1) ON DUPLICATE KEY UPDATE `read`=1");
+echo $db->error;
 ?>
