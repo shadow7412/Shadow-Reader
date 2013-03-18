@@ -7,7 +7,13 @@ function get($a, $b=""){
 	} else return $b;
 }
 $json = array();
-$res = $db->query("SELECT * FROM `fetchview` ".(get("folder",0)==0?"":" WHERE `feed`=".get("folder",0))." ORDER BY date DESC LIMIT ".get("start",0).",".get("length",100));
+$res = $db->query("SELECT `rssitems`.`id`,`link`,`title`,`subject`,`rssitems`.`date`,`content`,`shared`,`starred`,`read`
+FROM rssitems
+LEFT JOIN `useritems`
+ON `rssitems`.id=`useritems`.iditem
+LEFT JOIN `rssfeeds`
+ON `rssfeeds`.id=`feed`
+ ".(get("folder",0)==0?"":" WHERE `feed`=".get("folder",0))." ORDER BY date DESC LIMIT ".get("start",0).",".get("length",100));
 
 //requires:
 //id of Item
