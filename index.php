@@ -186,19 +186,21 @@
 			success:function(a){
 				//add results to accordian
 				var lb = "";
+				console.log(a);
 				var active = destroyAccordion();
 				var len = a.length;
 				if(a.length==0) lb = l.end;
 				else for(var i=0;i<len;i++){
-					$(o.f).append("<h3 name="+a[i].id+">"+
+					$(o.f).append("<h3 name=\""+a[i].id+"\" class=\""+(a[i].read==1?"read":"")+"\"\">"+
 						(a[i].subject.length<60?a[i].subject:a[i].subject.substring(0,60)+"...")+
 						"</a><span class=\"fromFeed\">"+
-						a[i].feed
+						a[i].title
 						+"</span></h3><div>"+
 						"<h2><a target= \"_blank\" href=\""+a[i].link+"\">"+
 						a[i].subject+"</a></h2>"+
 						a[i].content+
 						"</div>");
+						//also - starred/shared.
 				}
 				refreshAccordion(active);
 				$(o.f).fadeIn();
