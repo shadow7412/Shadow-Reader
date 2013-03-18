@@ -17,7 +17,7 @@ function sql2table($r,$h){
 	echo "</table>";
 }
 require "include/db.php";
-sql2table($db->query("SELECT * FROM scrapemetrics"),"Scrape History");
+sql2table($db->query("SELECT * FROM scrapemetrics ORDER BY date DESC"),"Scrape History");
 ?>
 </body>
 </html>
